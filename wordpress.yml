@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+     name: wordpress
+spec:
+     replicas: 1
+     selector:
+        matchLabels:
+            app: wp
+     template:
+         metadata:
+              name: wp-pod
+              labels:
+                   app: wp
+         spec:
+           containers:
+                     - name: wpcontainer
+                       image: wordpress
+                       env:
+                           - name: WORDPRESS_DB_PASSWORD
+                             value: "redhat"
+                           - name: WORDPRESS_DB_USER
+                             value: "root"
+                           - name: WORDPRESS_DB_NAME
+                             value: "sourabh"
+                           - name: WORDPRESS_DB_HOST
+                             value: "db-svc"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+       name: wp-svc
+spec:
+       selector:
+           app: wp
+       type: NodePort
+       ports:
+          - targetPort: 80
+            port: 80
+            nodePort: 31081  
